@@ -62,12 +62,15 @@ function HomeLayout() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewcomment] = useState("");
   const [date, setDate] = useState([]);
-  console.log("@SN date", date);
+  // const [name, setName] = useState();
+
+  // console.log("@SN name", name);
   useEffect(() => {
     fetch("https://mocki.io/v1/b0c7d7ea-5d09-4b9c-8d4b-c1b40cc39bc9")
       .then((data) => data.json())
       .then((res) => setComments(res.comments));
   }, []);
+
   const handleChange = (event) => {
     const {
       target: { value },
@@ -107,7 +110,7 @@ function HomeLayout() {
   };
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <Button onClick={handleOpen}>Comments</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -148,11 +151,15 @@ function HomeLayout() {
                       secondary={
                         <>
                           {item.comment}
-                          {item.taggedTo && (
-                            <>
-                              <br /> <span>{item.taggedTo}</span> <br />
-                            </>
-                          )}
+                          <br />
+                          {item.taggedTo &&
+                            item.taggedTo.map((item, index) => {
+                              return (
+                                <div key={index}>
+                                  <span style={{ color: "red" }}>{item}</span>
+                                </div>
+                              );
+                            })}
                           <Typography
                             sx={{ display: "inline" }}
                             component="span"
@@ -183,10 +190,9 @@ function HomeLayout() {
                 rows="4"
                 cols="50"
                 style={{ resize: "none" }}
+                placeholder="Enter comment..."
                 onChange={(e) => setNewcomment(e.target.value)}
-              >
-                hello
-              </textarea>
+              ></textarea>
             </Box>
           </Box>
           <Stack direction="row" spacing={2} style={{ paddingLeft: "65px" }}>
