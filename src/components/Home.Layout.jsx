@@ -61,8 +61,6 @@ function HomeLayout() {
   const [personName, setPersonName] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewcomment] = useState("");
-  const [date, setDate] = useState([]);
-  // const [name, setName] = useState();
 
   // console.log("@SN name", name);
   useEffect(() => {
@@ -88,12 +86,7 @@ function HomeLayout() {
     let h = data.getHours() % 12 || 12;
     let m = data.getMinutes();
 
-    setDate((prevState) => {
-      return [
-        ...prevState,
-        [day + " " + month + ", " + year + ", " + h + ":" + m],
-      ];
-    });
+    const updatedOn = day + " " + month + ", " + year + ", " + h + ":" + m;
 
     setComments((prevState) => {
       return [
@@ -102,12 +95,16 @@ function HomeLayout() {
           updatedBy: "Suyog Nagawade",
           comment: newComment,
           taggedTo: personName,
-          updatedOn: date,
+          updatedOn,
         },
       ];
     });
     setNewcomment("");
   };
+  function getInitials(name) {
+    const nameArray = name.split(" ");
+    return nameArray[0].charAt(0) + nameArray[nameArray.length - 1].charAt(0);
+  }
   return (
     <div>
       <Button onClick={handleOpen}>Comments</Button>
@@ -144,7 +141,9 @@ function HomeLayout() {
                       <Avatar
                         alt={item.updatedBy}
                         src="/static/images/avatar/1.jpg"
-                      />
+                      >
+                        {getInitials(item.updatedBy)}
+                      </Avatar>
                     </ListItemAvatar>
                     <ListItemText
                       primary={item.updatedBy}
@@ -152,14 +151,18 @@ function HomeLayout() {
                         <>
                           {item.comment}
                           <br />
-                          {item.taggedTo &&
-                            item.taggedTo.map((item, index) => {
-                              return (
-                                <div key={index}>
-                                  <span style={{ color: "red" }}>{item}</span>
-                                </div>
-                              );
-                            })}
+                          <div>
+                            {item.taggedTo &&
+                              item.taggedTo.map((item, index) => {
+                                return (
+                                  <>
+                                    <span key={index} style={{ color: "red" }}>
+                                      {item},
+                                    </span>
+                                  </>
+                                );
+                              })}
+                          </div>
                           <Typography
                             sx={{ display: "inline" }}
                             component="span"
@@ -181,7 +184,9 @@ function HomeLayout() {
           <Box sx={{ "& > :not(style)": { m: 1 } }}>
             <Box sx={{ display: "flex", alignItems: "flex-end" }}>
               <ListItemAvatar>
-                <Avatar alt="Suyog" src="/static/images/avatar/2.jpg" />
+                <Avatar src="/static/images/avatar/1.jpg">
+                  {getInitials("Suyog Nagawade")}
+                </Avatar>
               </ListItemAvatar>
               <textarea
                 value={newComment}
